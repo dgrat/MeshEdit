@@ -41,6 +41,9 @@ public:
 
     Qt3DCore::QEntity *getPos(int x, int y, int z) const;
 
+public slots:
+    void pressedEntity(Qt3DRender::QPickEvent *, Qt3DCore::QEntity *entity);
+
 signals:
     void radiusChanged();
     void xPointsChanged();

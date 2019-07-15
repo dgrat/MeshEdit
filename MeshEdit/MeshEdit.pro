@@ -30,7 +30,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Scene.qml
+    Button.qml \
+    Scene.qml \
+    main.qml
 
 HEADERS += \
     grid3x3.h

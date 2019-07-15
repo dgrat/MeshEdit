@@ -6,6 +6,11 @@ CtrlPtEntity::CtrlPtEntity( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(paren
         Qt3DExtras::QSphereMesh *ctrl_pt = new Qt3DExtras::QSphereMesh;
         ctrl_pt->setRadius(_radius);
 
+        Qt3DRender::QPickingSettings *settings = new Qt3DRender::QPickingSettings(this);
+        settings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontFace);
+        settings->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
+        settings->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
+
         for(int x = 0; x < _pts_x; x++)
         for(int y = 0; y < _pts_y; y++)
         for(int z = 0; z < _pts_z; z++) {
@@ -18,12 +23,19 @@ CtrlPtEntity::CtrlPtEntity( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(paren
             );
 
             auto entity = new Qt3DCore::QEntity(this);
+
+            Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
+            QObject::connect(picker, &Qt3DRender::QObjectPicker::clicked, this, [=](Qt3DRender::QPickEvent *event){pressedEntity(event, entity);} );
+
+            entity->addComponent(picker);
             entity->addComponent(material);
             entity->addComponent(ctrl_pt);
             entity->addComponent(pos);
 
             _CtrlPtList[{x,y,z}] = entity;
         }
+
+        qDebug() << "ctor test";
 }
 
 Qt3DCore::QEntity *CtrlPtEntity::getPos(int x, int y, int z) const {
@@ -31,3 +43,16 @@ Qt3DCore::QEntity *CtrlPtEntity::getPos(int x, int y, int z) const {
 }
 
 CtrlPtEntity::~CtrlPtEntity() {}
+
+void CtrlPtEntity::pressedEntity(Qt3DRender::QPickEvent *event, Qt3DCore::QEntity *entity) {
+    qDebug() << "test" << entity;
+
+    for (auto *component : entity->components()) {
+        Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
+        if(trafo) {
+            qDebug() << "trafo found";
+            auto transl = trafo->translation();
+            qDebug() << transl.x() << transl.y() << transl.z();
+        }
+    }
+}
