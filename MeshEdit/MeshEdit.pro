@@ -31,6 +31,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     Button.qml \
+    CoordinateInput.qml \
     Scene.qml \
     main.qml
 

@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>Button.qml</file>
         <file>Scene.qml</file>
+        <file>CoordinateInput.qml</file>
     </qresource>
 </RCC>

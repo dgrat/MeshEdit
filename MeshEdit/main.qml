@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.2
 import QtQuick.Scene3D 2.0
+import QtQuick.Dialogs 1.2
 
 
 Item {
@@ -35,7 +36,29 @@ Item {
         anchors.left: parent.left
         anchors.margins: 5
 
-        onFileSelected: {
+        FileDialog {
+            id: fileDialog
+            title: "Please choose a file"
+            folder: shortcuts.home
+            onAccepted: {
+                console.log("You chose: " + fileDialog.fileUrls)
+                root.fileSelected(fileDialog.fileUrl)
+                Qt.quit()
+            }
+            onRejected: {
+                console.log("Canceled")
+                Qt.quit()
+            }
         }
+
+        onReleased: {
+            fileDialog.visible = true
+        }
+    }
+
+    CoordinateInput {
+        label: "Enter Coordinate"
+        width: 150
+        height: 105
     }
 }
