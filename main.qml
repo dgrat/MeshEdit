@@ -26,6 +26,14 @@ Item {
         }
     }
 
+    CoordinateInput {
+        id: coord_inp
+        label: "Enter Coordinate"
+        width: 150
+        height: 105
+        visible: false
+    }
+
     Button {
         id: button
         label: "Load Mesh"
@@ -54,11 +62,5 @@ Item {
         onReleased: {
             fileDialog.visible = true
         }
-    }
-
-    CoordinateInput {
-        label: "Enter Coordinate"
-        width: 150
-        height: 105
     }
 }

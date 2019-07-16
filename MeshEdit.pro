@@ -1,4 +1,4 @@
-QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation
+QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation widgets
 CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use

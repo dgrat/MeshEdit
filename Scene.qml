@@ -41,5 +41,13 @@ Entity {
     CtrlPtEntity {
         id: ctrlPoints
         radius: 0.05
+
+        onEntityPressed: {
+            console.log(ctrl_point, entity_position.x, entity_position.y, entity_position.z)
+
+            coord_inp.set_ctrl_pt_position(entity_position.x, entity_position.y, entity_position.z)
+            coord_inp.set_dial_position(mouse_position.x, mouse_position.y)
+            coord_inp.set_entities(ctrlPoints, ctrl_point)
+        }
     }
 }

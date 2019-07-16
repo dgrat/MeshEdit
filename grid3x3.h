@@ -9,6 +9,7 @@
 #include <Qt3DLogic>
 #include <Qt3DExtras>
 #include <Qt3DAnimation>
+#include <QVector3D>
 
 
 class CtrlPtEntity : public Qt3DCore::QEntity {
@@ -23,7 +24,7 @@ class CtrlPtEntity : public Qt3DCore::QEntity {
     int _pts_y = 3;
     int _pts_z = 3;
 
-    std::map<std::array<int, 3>, Qt3DCore::QEntity *> _CtrlPtList;
+    std::map<Qt3DCore::QEntity *, std::array<int, 3>> _CtrlPtList;
 
 public:
     CtrlPtEntity( Qt3DCore::QEntity* parent = nullptr);
@@ -39,12 +40,13 @@ public:
     void setYPoints(int y) { _pts_y = y; emit yPointsChanged(); }
     void setZPoints(int z) { _pts_z = z; emit zPointsChanged(); }
 
-    Qt3DCore::QEntity *getPos(int x, int y, int z) const;
-
 public slots:
-    void pressedEntity(Qt3DRender::QPickEvent *, Qt3DCore::QEntity *entity);
+    void sl_entityPressed(Qt3DRender::QPickEvent *, Qt3DCore::QEntity *entity);
+    void sl_changePosition(Qt3DCore::QEntity *ctrl_point, QVector3D position);
 
 signals:
+    void entityPressed(Qt3DCore::QEntity *ctrl_point, QVector3D entity_position, QPointF mouse_position);
+
     void radiusChanged();
     void xPointsChanged();
     void yPointsChanged();

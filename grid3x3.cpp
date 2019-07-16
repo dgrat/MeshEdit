@@ -25,34 +25,35 @@ CtrlPtEntity::CtrlPtEntity( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(paren
             auto entity = new Qt3DCore::QEntity(this);
 
             Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
-            QObject::connect(picker, &Qt3DRender::QObjectPicker::clicked, this, [=](Qt3DRender::QPickEvent *event){pressedEntity(event, entity);} );
+            QObject::connect(picker, &Qt3DRender::QObjectPicker::clicked, this, [=](Qt3DRender::QPickEvent *event){sl_entityPressed(event, entity);} );
 
             entity->addComponent(picker);
             entity->addComponent(material);
             entity->addComponent(ctrl_pt);
             entity->addComponent(pos);
 
-            _CtrlPtList[{x,y,z}] = entity;
+            _CtrlPtList[entity] = {x,y,z};
         }
-
-        qDebug() << "ctor test";
-}
-
-Qt3DCore::QEntity *CtrlPtEntity::getPos(int x, int y, int z) const {
-   return _CtrlPtList.at({x,y,z});
 }
 
 CtrlPtEntity::~CtrlPtEntity() {}
 
-void CtrlPtEntity::pressedEntity(Qt3DRender::QPickEvent *event, Qt3DCore::QEntity *entity) {
-    qDebug() << "test" << entity;
-
+void CtrlPtEntity::sl_entityPressed(Qt3DRender::QPickEvent *event, Qt3DCore::QEntity *entity) {
     for (auto *component : entity->components()) {
         Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
         if(trafo) {
             qDebug() << "trafo found";
             auto transl = trafo->translation();
-            qDebug() << transl.x() << transl.y() << transl.z();
+            emit entityPressed(entity, QVector3D(transl.x(), transl.y(), transl.z()), event->position());
+        }
+    }
+}
+
+void CtrlPtEntity::sl_changePosition(Qt3DCore::QEntity *ctrl_point, QVector3D position) {
+    for (auto *component : ctrl_point->components()) {
+        Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
+        if(trafo) {
+            trafo->setTranslation(position);
         }
     }
 }
