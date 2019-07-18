@@ -15,7 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         grid3x3.cpp \
         main.cpp \
-        stlmesh.cpp
+        stl_mesh.cpp \
+        stl_mesh_geom.cpp
 
 RESOURCES += qml.qrc
 
@@ -39,4 +40,5 @@ DISTFILES += \
 HEADERS += \
     grid3x3.h \
     stl_import.h \
-    stlmesh.h
+    stl_mesh.h \
+    stl_mesh_geom.h
