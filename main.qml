@@ -22,7 +22,9 @@ Item {
             aspects: ["input", "logic"]
             cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
 
-            Scene {}
+            Scene {
+                id: customScene
+            }
         }
     }
 
@@ -50,7 +52,7 @@ Item {
             folder: shortcuts.home
             onAccepted: {
                 console.log("You chose: " + fileDialog.fileUrls)
-                root.fileSelected(fileDialog.fileUrl)
+                customScene.loadMesh(fileDialog.fileUrl)
                 Qt.quit()
             }
             onRejected: {

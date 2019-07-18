@@ -1,14 +1,16 @@
 #include <QGuiApplication>
 #include <QQuickView>
 
-#include "grid3x3.h"
+#include "ctrl_points.h"
+#include "stl_mesh.h"
 
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<CtrlPtEntity>("own.classes.ctrl_points", 1, 0, "CtrlPtEntity");
+    qmlRegisterType<ctrl_points>("own.classes.ctrl_points", 1, 0, "CtrlPoints");
+    qmlRegisterType<stl_mesh>("own.classes.stl_mesh", 1, 0, "StlMesh");
 
     QQuickView view;
 

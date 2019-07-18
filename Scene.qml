@@ -6,6 +6,7 @@ import Qt3D.Extras 2.0
 import QtQuick 2.0
 
 import own.classes.ctrl_points 1.0
+import own.classes.stl_mesh 1.0
 
 
 Entity {
@@ -14,15 +15,17 @@ Entity {
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 45
-        nearPlane : 0.1
-        farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, 5.0 )
-        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+        fieldOfView: 30
+        nearPlane : 0.001
+        farPlane : 100.0
+        position: Qt.vector3d( 0.0, 5.0, 0.0 )
+        upVector: Qt.vector3d( 0.0, 0.0, 1.0 )
+        viewCenter: Qt.vector3d( 0.5, 0.5, 0.5 )
     }
 
-    FirstPersonCameraController { camera: camera }
+    OrbitCameraController {
+         camera: camera
+     }
 
     components: [
         RenderSettings {
@@ -38,7 +41,7 @@ Entity {
         id: material
     }
 
-    CtrlPtEntity {
+    CtrlPoints {
         id: ctrlPoints
         radius: 0.05
 
@@ -49,5 +52,22 @@ Entity {
             coord_inp.set_dial_position(mouse_position.x, mouse_position.y)
             coord_inp.set_entities(ctrlPoints, ctrl_point)
         }
+    }
+
+    Entity {
+        id: mesh_entity
+        PhongMaterial {
+            id: mesh_mat
+        }
+
+        StlMesh {
+            id: mesh
+        }
+
+        components: [ mesh, mesh_mat ]
+    }
+
+    function loadMesh(filename) {
+        mesh.sl_load(filename);
     }
 }

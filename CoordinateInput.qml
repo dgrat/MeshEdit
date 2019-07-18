@@ -11,7 +11,7 @@ import own.classes.ctrl_points 1.0
 Item {
     id: root
     property string label: "Custom Input"
-    property CtrlPtEntity ctrl_points
+    property CtrlPoints ctrl_points
     property Entity ctrl_point
 
     signal clicked()
@@ -50,7 +50,7 @@ Item {
         Text {
             id: inp_label
             text: root.label
-            x: rect.x
+            x: rect.x + 10
             y: rect.y
             font.pointSize: 12
         }
@@ -58,21 +58,21 @@ Item {
         Text {
             id: inp_x_lab
             text: qsTr("[x]=")
-            x: rect.x
+            x: rect.x + 5
             y: rect.y + inp_label.contentHeight*1.25
             font.pointSize: 10
         }
         Text {
             id: inp_y_lab
             text: qsTr("[y]=")
-            x: rect.x
+            x: rect.x + 5
             y: rect.y + inp_label.contentHeight*1.25 + inp_x_lab.contentHeight
             font.pointSize: 10
         }
         Text {
             id: inp_z_lab
             text: qsTr("[z]=")
-            x: rect.x
+            x: rect.x + 5
             y: rect.y + inp_label.contentHeight*1.25 + inp_x_lab.contentHeight + inp_y_lab.contentHeight
             font.pointSize: 10
         }
@@ -145,8 +145,9 @@ Item {
             label: "OK"
             width: 60
             height: 25
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
+
+            x: inp_x_lab.x + 5
+            y: rect.height - 30
 
             onPressed: {
                 var x = parseFloat(inp_x.text)
@@ -164,8 +165,9 @@ Item {
             label: "Cancel"
             width: 60
             height: 25
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
+
+            x: rect.width - width - 5
+            y: rect.height - 30
 
             onPressed: {
                 root.visible = false

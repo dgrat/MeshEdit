@@ -13,14 +13,6 @@ class stl_mesh : public Qt3DRender::QGeometryRenderer
 public:
     stl_mesh(QNode *parent = nullptr);
 
-private:
-    // As this is a default provided geometry renderer, no one should be able
-    // to modify the QGeometryRenderer's properties
-    void setVertexCount(int vertexCount);
-    void setIndexOffset(int indexOffset);
-    void setFirstInstance(int firstInstance);
-    void setRestartIndexValue(int index);
-    void setPrimitiveRestartEnabled(bool enabled);
-    void setGeometry(Qt3DRender::QGeometry *geometry);
-    void setPrimitiveType(PrimitiveType primitiveType);
+public slots:
+    void sl_load(const QUrl &filename);
 };

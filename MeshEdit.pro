@@ -13,8 +13,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        grid3x3.cpp \
+        ctrl_points.cpp \
         main.cpp \
+        stl_import.cpp \
         stl_mesh.cpp \
         stl_mesh_geom.cpp
 
@@ -38,7 +39,7 @@ DISTFILES += \
     main.qml
 
 HEADERS += \
-    grid3x3.h \
+    ctrl_points.h \
     stl_import.h \
     stl_mesh.h \
     stl_mesh_geom.h

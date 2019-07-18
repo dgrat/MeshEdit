@@ -12,14 +12,14 @@
 #include <QVector3D>
 
 
-class CtrlPtEntity : public Qt3DCore::QEntity {
+class ctrl_points : public Qt3DCore::QEntity {
     Q_OBJECT
     Q_PROPERTY(int x_points READ xPoints WRITE setXPoints NOTIFY xPointsChanged)
     Q_PROPERTY(int y_points READ yPoints WRITE setYPoints NOTIFY yPointsChanged)
     Q_PROPERTY(int z_points READ zPoints WRITE setZPoints NOTIFY zPointsChanged)
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
-    float _radius = 0.05f;
+    float _radius = 0.01f;
     int _pts_x = 3;
     int _pts_y = 3;
     int _pts_z = 3;
@@ -27,8 +27,8 @@ class CtrlPtEntity : public Qt3DCore::QEntity {
     std::map<Qt3DCore::QEntity *, std::array<int, 3>> _CtrlPtList;
 
 public:
-    CtrlPtEntity( Qt3DCore::QEntity* parent = nullptr);
-    virtual ~CtrlPtEntity();
+    ctrl_points(Qt3DCore::QEntity* parent = nullptr);
+    virtual ~ctrl_points();
 
     float radius() const { return _radius; }
     int xPoints() const { return _pts_x; }

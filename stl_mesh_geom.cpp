@@ -1,5 +1,4 @@
 #include <glm/glm.hpp>
-#include "stl_import.h"
 #include "stl_mesh_geom.h"
 #include <cmath>
 
@@ -9,9 +8,38 @@
 #include <QAttribute>
 #include <QUrl>
 
+namespace {
+    QByteArray createVertexData(const std::vector<stl::face> &stl_data) {
+        QByteArray mesh_buf;
+        mesh_buf.resize(stl_data.size() * 6 * sizeof(glm::vec3));
+        glm::vec3 *mesh_buf_acc = reinterpret_cast<glm::vec3 *>(mesh_buf.data());
 
-QByteArray createVertexData(const std::vector<stl::face> &stl_data);
-QByteArray createIndexData(const std::vector<stl::face> &stl_data);
+        uint32_t vert_ind = 0;
+        for (auto &face : stl_data) {
+            mesh_buf_acc[vert_ind++] = face._vert_1;
+            mesh_buf_acc[vert_ind++] = face._norm;
+
+            mesh_buf_acc[vert_ind++] = face._vert_2;
+            mesh_buf_acc[vert_ind++] = face._norm;
+
+            mesh_buf_acc[vert_ind++] = face._vert_3;
+            mesh_buf_acc[vert_ind++] = face._norm;
+        }
+        return mesh_buf;
+    }
+
+    QByteArray createIndexData(const std::vector<stl::face> &stl_data) {
+        QByteArray index_buf;
+        index_buf.resize(stl_data.size() * 3 * sizeof(uint32_t));
+        uint32_t *index_buf_acc = reinterpret_cast<uint32_t *>(index_buf.data());
+
+        for (unsigned int i = 0; i < stl_data.size()*3; i++) {
+            index_buf_acc[i] = i;
+        }
+
+        return index_buf;
+    }
+};
 
 inline bool glm_equal(const glm::vec3 &v1, const glm::vec3 &v2) {
     glm::vec3 r = glm::abs(v1 - v2);
@@ -31,20 +59,6 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const override {
-        const STLVertexDataFunctor *otherFunctor = functor_cast<STLVertexDataFunctor>(&other);
-        if (otherFunctor != nullptr) {
-            if (otherFunctor->_stl_data.size() != _stl_data.size()) return false;
-
-            for(unsigned long i = 0; i < otherFunctor->_stl_data.size(); i++) {
-                const stl::face &f1 = otherFunctor->_stl_data.at(i);
-                const stl::face &f2 = _stl_data.at(i);
-
-                if(!glm_equal(f1._vert_1, f2._vert_1)) return false;
-                if(!glm_equal(f1._vert_2, f2._vert_2)) return false;
-                if(!glm_equal(f1._vert_3, f2._vert_3)) return false;
-            }
-            return true;
-        }
         return false;
     }
 
@@ -53,7 +67,7 @@ public:
 private:
     const std::vector<stl::face> &_stl_data;
 };
-/*
+
 class STLIndexDataFunctor : public Qt3DRender::QBufferDataGenerator
 {
 public:
@@ -64,9 +78,6 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const override {
-        const STLIndexDataFunctor *otherFunctor = functor_cast<STLIndexDataFunctor>(&other);
-        if (otherFunctor != nullptr)
-            return (otherFunctor->_stl_data == _stl_data);
         return false;
     }
     QT3D_FUNCTOR(STLIndexDataFunctor)
@@ -74,30 +85,44 @@ public:
 private:
     const std::vector<stl::face> &_stl_data;
 };
-*/
+
 stl_mesh_geom::stl_mesh_geom(QNode *parent) : Qt3DRender::QGeometry(parent)
 {
 
 }
 
 void stl_mesh_geom::load(const QUrl &filename) {
+    if(filename.isEmpty()) return;
+
     stl::format stl_file(filename.path().toStdString());
     auto bbox = stl_file.estimate_bbox(stl_file.faces());
     _stl_data = stl_file.normalized(bbox);
+
+    if(_stl_data.size() > 0) {
+        init();
+    }
+}
+
+void stl_mesh_geom::create(const std::vector<stl::face> &data) {
+    _stl_data = data;
+
+    if(_stl_data.size() > 0) {
+        init();
+    }
 }
 
 void stl_mesh_geom::init() {
-    m_positionAttribute = new Qt3DRender::QAttribute(this);
-    m_normalAttribute = new Qt3DRender::QAttribute(this);
-    m_indexAttribute = new Qt3DRender::QAttribute(this);
-    m_vertexBuffer = new Qt3DRender::QBuffer(this);
-    m_indexBuffer = new Qt3DRender::QBuffer(this);
+    if(!m_positionAttribute) m_positionAttribute = new Qt3DRender::QAttribute(this);
+    if(!m_normalAttribute) m_normalAttribute = new Qt3DRender::QAttribute(this);
+    if(!m_indexAttribute) m_indexAttribute = new Qt3DRender::QAttribute(this);
+    if(!m_vertexBuffer) m_vertexBuffer = new Qt3DRender::QBuffer(this);
+    if(!m_indexBuffer) m_indexBuffer = new Qt3DRender::QBuffer(this);
 
     // vec3 pos, vec3 normal
-    const quint32 elementSize = 3 + 3;
-    const quint32 stride = elementSize * sizeof(float);
-    const int faces = _stl_data.size();
-    const int nVerts = faces * 3;
+    const quint32 elementSize = 1 + 1;
+    const quint32 stride = elementSize * sizeof(glm::vec3);
+    const size_t faces = _stl_data.size();
+    const size_t nVerts = faces * 3;
 
     m_positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
     m_positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
@@ -113,16 +138,16 @@ void stl_mesh_geom::init() {
     m_normalAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     m_normalAttribute->setBuffer(m_vertexBuffer);
     m_normalAttribute->setByteStride(stride);
-    m_normalAttribute->setByteOffset(3 * sizeof(float));
+    m_normalAttribute->setByteOffset(sizeof(glm::vec3));
     m_normalAttribute->setCount(nVerts);
 
     m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-    m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+    m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     m_indexAttribute->setBuffer(m_indexBuffer);
     m_indexAttribute->setCount(nVerts);
 
     m_vertexBuffer->setDataGenerator(QSharedPointer<STLVertexDataFunctor>::create(_stl_data));
-//    m_indexBuffer->setDataGenerator(QSharedPointer<STLIndexDataFunctor>::create(_stl_data));
+    m_indexBuffer->setDataGenerator(QSharedPointer<STLIndexDataFunctor>::create(_stl_data));
 
     this->addAttribute(m_positionAttribute);
     this->addAttribute(m_normalAttribute);

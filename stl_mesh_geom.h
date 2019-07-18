@@ -2,10 +2,9 @@
 
 #include <Qt3DRender/QGeometry>
 #include <vector>
+#include "stl_import.h"
 
-namespace stl {
-    struct face;
-};
+
 class QNode;
 namespace Qt3DRender {
     class QBuffer;
@@ -23,17 +22,18 @@ private:
 
     std::vector<stl::face> _stl_data;
 
-    Qt3DRender::QAttribute *m_positionAttribute;
-    Qt3DRender::QAttribute *m_normalAttribute;
-    Qt3DRender::QAttribute *m_indexAttribute;
+    Qt3DRender::QAttribute *m_positionAttribute = nullptr;
+    Qt3DRender::QAttribute *m_normalAttribute = nullptr;
+    Qt3DRender::QAttribute *m_indexAttribute = nullptr;
 
-    Qt3DRender::QBuffer *m_vertexBuffer;
-    Qt3DRender::QBuffer *m_indexBuffer;
+    Qt3DRender::QBuffer *m_vertexBuffer = nullptr;
+    Qt3DRender::QBuffer *m_indexBuffer = nullptr;
 
 public:
     stl_mesh_geom(QNode *parent = nullptr);
 
     void load(const QUrl &filename);
+    void create(const std::vector<stl::face> &);
 
     Qt3DRender::QAttribute *positionAttribute() const;
     Qt3DRender::QAttribute *normalAttribute() const;
