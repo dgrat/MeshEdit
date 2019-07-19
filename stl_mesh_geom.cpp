@@ -39,6 +39,10 @@ namespace {
 
         return index_buf;
     }
+
+    template <typename T>
+    void ignore(T &&)
+    { }
 };
 
 inline bool glm_equal(const glm::vec3 &v1, const glm::vec3 &v2) {
@@ -59,6 +63,7 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const override {
+        ignore(other);
         return false;
     }
 
@@ -78,6 +83,7 @@ public:
     }
 
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const override {
+        ignore(other);
         return false;
     }
     QT3D_FUNCTOR(STLIndexDataFunctor)
@@ -99,19 +105,17 @@ void stl_mesh_geom::load(const QUrl &filename) {
     _stl_data = stl_file.normalized(bbox);
 
     if(_stl_data.size() > 0) {
-        init();
+        init(_stl_data);
     }
 }
 
-void stl_mesh_geom::create(const std::vector<stl::face> &data) {
-    _stl_data = data;
-
-    if(_stl_data.size() > 0) {
-        init();
+void stl_mesh_geom::refresh(const std::vector<stl::face> &data) {
+    if(data.size() > 0) {
+        init(data);
     }
 }
 
-void stl_mesh_geom::init() {
+void stl_mesh_geom::init(const std::vector<stl::face> &data) {
     if(!m_positionAttribute) m_positionAttribute = new Qt3DRender::QAttribute(this);
     if(!m_normalAttribute) m_normalAttribute = new Qt3DRender::QAttribute(this);
     if(!m_indexAttribute) m_indexAttribute = new Qt3DRender::QAttribute(this);
@@ -121,7 +125,7 @@ void stl_mesh_geom::init() {
     // vec3 pos, vec3 normal
     const quint32 elementSize = 1 + 1;
     const quint32 stride = elementSize * sizeof(glm::vec3);
-    const size_t faces = _stl_data.size();
+    const size_t faces = data.size();
     const size_t nVerts = faces * 3;
 
     m_positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -146,8 +150,8 @@ void stl_mesh_geom::init() {
     m_indexAttribute->setBuffer(m_indexBuffer);
     m_indexAttribute->setCount(nVerts);
 
-    m_vertexBuffer->setDataGenerator(QSharedPointer<STLVertexDataFunctor>::create(_stl_data));
-    m_indexBuffer->setDataGenerator(QSharedPointer<STLIndexDataFunctor>::create(_stl_data));
+    m_vertexBuffer->setDataGenerator(QSharedPointer<STLVertexDataFunctor>::create(data));
+    m_indexBuffer->setDataGenerator(QSharedPointer<STLIndexDataFunctor>::create(data));
 
     this->addAttribute(m_positionAttribute);
     this->addAttribute(m_normalAttribute);

@@ -42,7 +42,6 @@ void ctrl_points::sl_entityPressed(Qt3DRender::QPickEvent *event, Qt3DCore::QEnt
     for (auto *component : entity->components()) {
         Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
         if(trafo) {
-            qDebug() << "trafo found";
             auto transl = trafo->translation();
             emit entityPressed(entity, QVector3D(transl.x(), transl.y(), transl.z()), event->position());
         }
@@ -54,6 +53,7 @@ void ctrl_points::sl_changePosition(Qt3DCore::QEntity *ctrl_point, QVector3D pos
         Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
         if(trafo) {
             trafo->setTranslation(position);
+            emit positionChanged();
         }
     }
 }

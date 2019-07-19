@@ -46,6 +46,7 @@ public slots:
 
 signals:
     void entityPressed(Qt3DCore::QEntity *ctrl_point, QVector3D entity_position, QPointF mouse_position);
+    void positionChanged();
 
     void radiusChanged();
     void xPointsChanged();

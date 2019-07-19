@@ -18,7 +18,7 @@ class stl_mesh_geom : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 private:
-    void init();
+    void init(const std::vector<stl::face> &);
 
     std::vector<stl::face> _stl_data;
 
@@ -33,7 +33,7 @@ public:
     stl_mesh_geom(QNode *parent = nullptr);
 
     void load(const QUrl &filename);
-    void create(const std::vector<stl::face> &);
+    void refresh(const std::vector<stl::face> &);
 
     Qt3DRender::QAttribute *positionAttribute() const;
     Qt3DRender::QAttribute *normalAttribute() const;

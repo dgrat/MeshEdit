@@ -1,4 +1,8 @@
 QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation widgets
+
+QMAKE_CXXFLAGS += -fopenmp
+LIBS += -fopenmp
+
 CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
@@ -40,6 +44,11 @@ DISTFILES += \
 
 HEADERS += \
     ctrl_points.h \
+    ffd/array_access.h \
+    ffd/bernstein.h \
+    ffd/bezier_generator.h \
+    ffd/enumerations.h \
+    ffd/static_size.h \
     stl_import.h \
     stl_mesh.h \
     stl_mesh_geom.h

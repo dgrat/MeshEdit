@@ -52,6 +52,10 @@ Entity {
             coord_inp.set_dial_position(mouse_position.x, mouse_position.y)
             coord_inp.set_entities(ctrlPoints, ctrl_point)
         }
+
+        onPositionChanged: {
+            mesh.sl_performFFD();
+        }
     }
 
     Entity {

@@ -8,6 +8,10 @@
 
 //! moved into namespace to hide it
 namespace detail {
+    template <typename T>
+    void ignore(T &&)
+    { }
+
 	//! consexpr version of abs()
 	template <class T>
 	constexpr auto abs_value(T val) {
@@ -33,6 +37,7 @@ namespace detail {
 	struct pow_helper<0> {
 		template <class T>
 		static auto run(const T &val) {
+            ignore(val);
 			return 1;
 		}
 	};
