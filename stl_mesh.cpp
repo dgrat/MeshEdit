@@ -1,6 +1,7 @@
 #include "stl_mesh.h"
 #include "stl_mesh_geom.h"
 #include "ffd/bezier_function.h"
+#include "ctrl_points.h"
 
 #include <array>
 #include <QEntity>
@@ -33,10 +34,9 @@ void stl_mesh::sl_load(const QUrl &filename) {
     static_cast<stl_mesh_geom *>(geometry())->load(filename);
 }
 
-void stl_mesh::sl_performFFD(
-        const std::map<Qt3DCore::QEntity *, std::array<int, 3>> &ctrl_pt_entities,
-        const std::vector<stl::face> &faces)
+void stl_mesh::sl_performFFD(const ctrl_points &ctrl_pt_entity)
 {
+    const auto &ctrl_pt_entities = ctrl_pt_entity.getCtrlPoints();
     // generate 3D ctrl pt array from currently active Qt3D entities
     arr3_3D ctrl_pts;
     #pragma omp parallel for
@@ -62,7 +62,7 @@ void stl_mesh::sl_performFFD(
 
     // copy faces
     _ffd_mesh.clear();
-    _ffd_mesh = faces;
+    _ffd_mesh = static_cast<stl_mesh_geom *>(geometry())->faces();
     // go over the faces (could use OpenMP)
     #pragma omp parallel for
     for(size_t i = 0; i < _ffd_mesh.size(); i++) {

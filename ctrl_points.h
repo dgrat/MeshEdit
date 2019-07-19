@@ -30,6 +30,8 @@ public:
     ctrl_points(Qt3DCore::QEntity* parent = nullptr);
     virtual ~ctrl_points();
 
+    std::map<Qt3DCore::QEntity *, std::array<int, 3>> getCtrlPoints() const { return _CtrlPtList; }
+
     float radius() const { return _radius; }
     int xPoints() const { return _pts_x; }
     int yPoints() const { return _pts_y; }

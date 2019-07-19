@@ -35,6 +35,8 @@ public:
     void load(const QUrl &filename);
     void refresh(const std::vector<stl::face> &);
 
+    const std::vector<stl::face> &faces() const { return _stl_data; }
+
     Qt3DRender::QAttribute *positionAttribute() const;
     Qt3DRender::QAttribute *normalAttribute() const;
     Qt3DRender::QAttribute *indexAttribute() const;

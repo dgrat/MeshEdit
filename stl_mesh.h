@@ -7,6 +7,7 @@
 
 class QNode;
 class QUrl;
+class ctrl_points;
 
 class stl_mesh : public Qt3DRender::QGeometryRenderer
 {
@@ -20,5 +21,5 @@ public:
 
 public slots:
     void sl_load(const QUrl &filename);
-    void sl_performFFD(const std::map<Qt3DCore::QEntity *, std::array<int, 3>> &, const std::vector<stl::face> &);
+    void sl_performFFD(const ctrl_points &);
 };

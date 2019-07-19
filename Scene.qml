@@ -54,7 +54,7 @@ Entity {
         }
 
         onPositionChanged: {
-            mesh.sl_performFFD();
+            sceneRoot.updateMesh();
         }
     }
 
@@ -73,5 +73,9 @@ Entity {
 
     function loadMesh(filename) {
         mesh.sl_load(filename);
+    }
+
+    function updateMesh() {
+        mesh.sl_performFFD(ctrlPoints);
     }
 }
