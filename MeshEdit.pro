@@ -46,7 +46,8 @@ HEADERS += \
     ctrl_points.h \
     ffd/array_access.h \
     ffd/bernstein.h \
-    ffd/bezier_generator.h \
+    ffd/bezier_function.h \
+    ffd/bezier_function_set.h \
     ffd/enumerations.h \
     ffd/static_size.h \
     stl_import.h \

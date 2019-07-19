@@ -1,6 +1,6 @@
 #include "stl_mesh.h"
 #include "stl_mesh_geom.h"
-#include "ffd/bezier_generator.h"
+#include "ffd/bezier_function.h"
 
 #include <array>
 #include <QEntity>

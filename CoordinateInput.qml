@@ -18,27 +18,16 @@ Item {
     signal pressed()
     signal released()
 
-
-    function set_entities(ctrl_points, ctrl_point) {
-        root.ctrl_points = ctrl_points
-        root.ctrl_point = ctrl_point
+    Keys.onEnterPressed:  {
+        root.applyPosition()
     }
-
-    function set_dial_position(x, y) {
-        root.x = x
-        root.y = y
-        coord_inp.visible = true
-    }
-
-    function set_ctrl_pt_position(x, y, z) {
-        inp_x.text = x
-        inp_y.text = y
-        inp_z.text = z
+    Keys.onEscapePressed: {
+        root.visible = false
     }
 
     Rectangle {
         id:rect
-        color: "white"
+        color: Qt.rgba(1.0, 1.0, 1.0, 0.5) // transparent white
         width: parent.width
         height: inp_label.contentHeight*1.25 + inp_x_lab.contentHeight + inp_y_lab.contentHeight + inp_z_lab.contentHeight + 5 + ok_but.height + 5
 
@@ -150,13 +139,7 @@ Item {
             y: rect.height - 30
 
             onPressed: {
-                var x = parseFloat(inp_x.text)
-                var y = parseFloat(inp_y.text)
-                var z = parseFloat(inp_z.text)
-                var v3d = Qt.vector3d(x,y,z)
-
-                root.ctrl_points.sl_changePosition(root.ctrl_point, v3d)
-                root.visible = false
+                root.applyPosition()
             }
         }
 
@@ -173,5 +156,32 @@ Item {
                 root.visible = false
             }
         }
+    }
+
+    function applyPosition() {
+        x = parseFloat(inp_x.text)
+        y = parseFloat(inp_y.text)
+        z = parseFloat(inp_z.text)
+        var v3d = Qt.vector3d(x,y,z)
+
+        root.ctrl_points.sl_changePosition(root.ctrl_point, v3d)
+        root.visible = false
+    }
+
+    function set_entities(ctrl_points, ctrl_point) {
+        root.ctrl_points = ctrl_points
+        root.ctrl_point = ctrl_point
+    }
+
+    function set_dial_position(x, y) {
+        root.x = x
+        root.y = y
+        coord_inp.visible = true
+    }
+
+    function set_ctrl_pt_position(x, y, z) {
+        inp_x.text = x
+        inp_y.text = y
+        inp_z.text = z
     }
 }
