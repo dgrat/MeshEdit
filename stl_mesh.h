@@ -21,5 +21,5 @@ public:
 
 public slots:
     void sl_load(const QUrl &filename);
-    void sl_performFFD(const ctrl_points &);
+    void sl_performFFD(ctrl_points *);
 };

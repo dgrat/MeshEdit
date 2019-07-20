@@ -27,29 +27,31 @@ stl_mesh::stl_mesh(QNode *parent) : Qt3DRender::QGeometryRenderer(parent)
     stl_mesh_geom *geometry = new stl_mesh_geom(this);
     QGeometryRenderer::setGeometry(geometry);
 
-    sl_load(QUrl("file:///home/varg/Downloads/cube.stl"));
+    sl_load(QUrl("file:///home/dgrat/Downloads/Test-Cube.stl"));
 }
 
 void stl_mesh::sl_load(const QUrl &filename) {
     static_cast<stl_mesh_geom *>(geometry())->load(filename);
 }
 
-void stl_mesh::sl_performFFD(const ctrl_points &ctrl_pt_entity)
+void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
 {
-    const auto &ctrl_pt_entities = ctrl_pt_entity.getCtrlPoints();
+    if(!ctrl_pt_entity) return;
+    const auto ctrl_pt_entities = ctrl_pt_entity->getCtrlPoints();
+
     // generate 3D ctrl pt array from currently active Qt3D entities
     arr3_3D ctrl_pts;
-    #pragma omp parallel for
-    for(size_t i = 0; i < ctrl_pt_entities.size(); i++) {
-        auto &p = *ctrl_pt_entities.begin()++;
-        auto &index = p.second;
-        auto &entity = p.first;
+    for(auto it = ctrl_pt_entities.begin(); it != ctrl_pt_entities.end(); it++) {
+        auto &index = it->second;
+        auto entity = it->first;
 
         QVector3D pos;
         for (auto *component : entity->components()) {
             Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
             if(trafo) {
                 pos = trafo->translation();
+
+                qDebug() << "trafo found "  << entity << pos.x() << pos.y() << pos.z();
                 break;
             }
         }
