@@ -7,9 +7,9 @@ ctrl_points::ctrl_points( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(parent)
         ctrl_pt->setRadius(_radius);
 
         Qt3DRender::QPickingSettings *settings = new Qt3DRender::QPickingSettings(this);
-        settings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontFace);
+        //settings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontFace);
         settings->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
-        settings->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
+        //settings->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
 
         for(int x = 0; x < _pts_x; x++)
         for(int y = 0; y < _pts_y; y++)

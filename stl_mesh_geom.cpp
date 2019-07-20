@@ -104,6 +104,9 @@ void stl_mesh_geom::load(const QUrl &filename) {
     auto bbox = stl_file.estimate_bbox(stl_file.faces());
     _stl_data = stl_file.normalized(bbox);
 
+    bbox = stl::format::estimate_bbox(_stl_data);
+    _dim = bbox._max - bbox._min;
+
     if(_stl_data.size() > 0) {
         init(_stl_data);
     }

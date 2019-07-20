@@ -33,7 +33,7 @@ namespace stl {
         return res;
     }
 
-    bbox format::estimate_bbox(const std::vector<face> &faces) const {
+    bbox format::estimate_bbox(const std::vector<face> &faces) {
         glm::vec3 min(FLT_MAX);
         glm::vec3 max(-FLT_MAX);
 

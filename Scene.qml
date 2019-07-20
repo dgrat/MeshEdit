@@ -64,11 +64,25 @@ Entity {
             id: mesh_mat
         }
 
-        StlMesh {
-            id: mesh
+        Transform {
+            id: transl
         }
 
-        components: [ mesh, mesh_mat ]
+        StlMesh {
+            id: mesh
+            onDimChanged: {
+                console.log(mesh.dim.x, mesh.dim.y, mesh.dim.z)
+
+                var x = (1 - dim.x) / 2
+                var y = (1 - dim.y) / 2
+                var z = (1 - dim.z) / 2
+                transl.translation = Qt.vector3d(x,y,z)
+
+                console.log(x, y, z)
+            }
+        }
+
+        components: [ mesh, mesh_mat, transl ]
     }
 
     function loadMesh(filename) {

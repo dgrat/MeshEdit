@@ -21,6 +21,7 @@ private:
     void init(const std::vector<stl::face> &);
 
     std::vector<stl::face> _stl_data;
+    glm::vec3 _dim;
 
     Qt3DRender::QAttribute *m_positionAttribute = nullptr;
     Qt3DRender::QAttribute *m_normalAttribute = nullptr;
@@ -35,6 +36,7 @@ public:
     void load(const QUrl &filename);
     void refresh(const std::vector<stl::face> &);
 
+    glm::vec3 getDim() const {return _dim;}
     const std::vector<stl::face> &faces() const { return _stl_data; }
 
     Qt3DRender::QAttribute *positionAttribute() const;

@@ -26,12 +26,15 @@ stl_mesh::stl_mesh(QNode *parent) : Qt3DRender::QGeometryRenderer(parent)
 {
     stl_mesh_geom *geometry = new stl_mesh_geom(this);
     QGeometryRenderer::setGeometry(geometry);
-
-    sl_load(QUrl("file:///home/dgrat/Downloads/Test-Cube.stl"));
 }
 
 void stl_mesh::sl_load(const QUrl &filename) {
-    static_cast<stl_mesh_geom *>(geometry())->load(filename);
+    auto geo = static_cast<stl_mesh_geom *>(geometry());
+    geo->load(filename);
+    _dim.setX(geo->getDim().x);
+    _dim.setY(geo->getDim().y);
+    _dim.setZ(geo->getDim().z);
+    emit dimChanged();
 }
 
 void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
@@ -72,8 +75,13 @@ void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
         face._vert_1 = bezier333(face._vert_1, ctrl_pts);
         face._vert_2 = bezier333(face._vert_2, ctrl_pts);
         face._vert_3 = bezier333(face._vert_3, ctrl_pts);
-        face._norm = bezier333(face._norm, ctrl_pts);
+
+        // recalc normal
+        glm::vec3 u = face._vert_2 - face._vert_1;
+        glm::vec3 v = face._vert_3 - face._vert_1;
+        face._norm = glm::cross(u, v);
     }
 
     static_cast<stl_mesh_geom *>(geometry())->refresh(_ffd_mesh);
+    emit dimChanged();
 }

@@ -41,7 +41,7 @@ namespace stl {
             bool load(const std::string &filename);
             const std::vector<face> &faces() const;
            
-            bbox estimate_bbox(const std::vector<face> &) const;
+            static bbox estimate_bbox(const std::vector<face> &);
             //! Scaled down to 0 <= x <= 1
             std::vector<face> normalized(const bbox &) const;
            
