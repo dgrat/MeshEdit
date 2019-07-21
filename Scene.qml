@@ -27,6 +27,18 @@ Entity {
          camera: camera
      }
 
+    Entity {
+        components: [
+            PointLight {
+                color: "white"
+                intensity: 1
+            },
+            Transform {
+                translation: camera.position
+            }
+        ]
+    }
+
     components: [
         RenderSettings {
             activeFrameGraph: ForwardRenderer {

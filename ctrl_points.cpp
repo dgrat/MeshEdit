@@ -1,8 +1,12 @@
 #include "ctrl_points.h"
+#include <QColor>
 
 ctrl_points::ctrl_points( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(parent)
 {
-        Qt3DRender::QMaterial *material = new Qt3DExtras::QPhongMaterial;
+        Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+        material->setDiffuse(QColor(255,0,0));
+        material->setShininess(0);
+        material->setSpecular(QColor(255,0,0));
         Qt3DExtras::QSphereMesh *ctrl_pt = new Qt3DExtras::QSphereMesh;
         ctrl_pt->setRadius(_radius);
 
