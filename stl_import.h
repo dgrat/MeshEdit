@@ -43,7 +43,7 @@ namespace stl {
            
             static bbox estimate_bbox(const std::vector<face> &);
             //! Scaled down to 0 <= x <= 1
-            std::vector<face> normalized(const bbox &) const;
+            static std::vector<face> normalized(const bbox &, const std::vector<face> &, const glm::vec3 &transl = glm::vec3(0));
            
             // operator overload to access face
             face& operator[](std::size_t idx) { return _faces[idx]; }

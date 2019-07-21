@@ -18,15 +18,15 @@ namespace stl {
         return _min * (-1.f);
     }
 
-    std::vector<face> format::normalized(const bbox &b) const {
+    std::vector<face> format::normalized(const bbox &b, const std::vector<face> &faces, const glm::vec3 &transl) {
         const float scale = b.scale();
         const glm::vec3 offs = b.offset();
 
         std::vector<face> res;
-        for(face f : _faces) {
-            glm::vec3 v1 = (f._vert_1 + offs) * scale;
-            glm::vec3 v2 = (f._vert_2 + offs) * scale;
-            glm::vec3 v3 = (f._vert_3 + offs) * scale;
+        for(face f : faces) {
+            glm::vec3 v1 = (f._vert_1 + offs) * scale + transl;
+            glm::vec3 v2 = (f._vert_2 + offs) * scale + transl;
+            glm::vec3 v3 = (f._vert_3 + offs) * scale + transl;
             res.push_back( { f._norm, v1, v2, v3 } );
         }
 

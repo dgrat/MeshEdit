@@ -101,8 +101,12 @@ void stl_mesh_geom::load(const QUrl &filename) {
     if(filename.isEmpty()) return;
 
     stl::format stl_file(filename.path().toStdString());
-    auto bbox = stl_file.estimate_bbox(stl_file.faces());
-    _stl_data = stl_file.normalized(bbox);
+    auto bbox = stl::format::estimate_bbox(stl_file.faces());
+
+    glm::vec3 dim = (bbox._max - bbox._min) * bbox.scale();
+    glm::vec3 ofs = (glm::vec3(1) - dim) / 2.f;
+
+    _stl_data = stl::format::normalized(bbox, stl_file.faces(), ofs);
 
     bbox = stl::format::estimate_bbox(_stl_data);
     _dim = bbox._max - bbox._min;

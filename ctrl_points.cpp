@@ -15,12 +15,11 @@ ctrl_points::ctrl_points( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(parent)
         for(int y = 0; y < _pts_y; y++)
         for(int z = 0; z < _pts_z; z++) {
             Qt3DCore::QTransform *pos = new Qt3DCore::QTransform;
-            pos->setTranslation(
-                { static_cast<float>(x) / (_pts_x-1),
-                  static_cast<float>(y) / (_pts_y-1),
-                  static_cast<float>(z) / (_pts_z-1)
-                }
-            );
+            glm::vec3 t = glm::vec3(static_cast<float>(x) / (_pts_x-1),
+                                    static_cast<float>(y) / (_pts_y-1),
+                                    static_cast<float>(z) / (_pts_z-1)
+                                    );
+            pos->setTranslation({ t.x, t.y, t.z });
 
             auto entity = new Qt3DCore::QEntity(this);
 
@@ -32,11 +31,26 @@ ctrl_points::ctrl_points( Qt3DCore::QEntity* parent) : Qt3DCore::QEntity(parent)
             entity->addComponent(ctrl_pt);
             entity->addComponent(pos);
 
-            _CtrlPtList[entity] = {x,y,z};
+            _CtrlPtIDs[entity] = {x,y,z};
+            _CtrlPtPos[entity] = t;
         }
 }
 
 ctrl_points::~ctrl_points() {}
+
+void ctrl_points::sl_resetCtrlPoints() {
+    for(auto &p : _CtrlPtPos) {
+        auto point = p.first;
+        auto pos = p.second;
+
+        for (auto *component : point->components()) {
+            Qt3DCore::QTransform *trafo = dynamic_cast<Qt3DCore::QTransform *>(component);
+            if(trafo) {
+                trafo->setTranslation(QVector3D(pos[0], pos[1], pos[2]));
+            }
+        }
+    }
+}
 
 void ctrl_points::sl_entityPressed(Qt3DRender::QPickEvent *event, Qt3DCore::QEntity *entity) {
     for (auto *component : entity->components()) {

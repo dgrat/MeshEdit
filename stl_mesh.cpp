@@ -31,16 +31,12 @@ stl_mesh::stl_mesh(QNode *parent) : Qt3DRender::QGeometryRenderer(parent)
 void stl_mesh::sl_load(const QUrl &filename) {
     auto geo = static_cast<stl_mesh_geom *>(geometry());
     geo->load(filename);
-    _dim.setX(geo->getDim().x);
-    _dim.setY(geo->getDim().y);
-    _dim.setZ(geo->getDim().z);
-    emit dimChanged();
 }
 
 void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
 {
     if(!ctrl_pt_entity) return;
-    const auto ctrl_pt_entities = ctrl_pt_entity->getCtrlPoints();
+    const auto ctrl_pt_entities = ctrl_pt_entity->getCtrlIDs();
 
     // generate 3D ctrl pt array from currently active Qt3D entities
     arr3_3D ctrl_pts;
@@ -83,5 +79,4 @@ void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
     }
 
     static_cast<stl_mesh_geom *>(geometry())->refresh(_ffd_mesh);
-    emit dimChanged();
 }
