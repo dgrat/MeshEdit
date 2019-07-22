@@ -36,6 +36,22 @@ Item {
         visible: false
     }
 
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        folder: shortcuts.home
+        nameFilters: ["Binary STL files (*.stl)"]
+        onAccepted: {
+            console.log("You chose: " + fileDialog.fileUrl)
+            customScene.loadMesh(fileDialog.fileUrl)
+            Qt.quit()
+        }
+        onRejected: {
+            console.log("Canceled")
+            Qt.quit()
+        }
+    }
+
     Button {
         id: button
         label: "Load Mesh"
@@ -45,21 +61,6 @@ Item {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.margins: 5
-
-        FileDialog {
-            id: fileDialog
-            title: "Please choose a file"
-            folder: shortcuts.home
-            onAccepted: {
-                console.log("You chose: " + fileDialog.fileUrls)
-                customScene.loadMesh(fileDialog.fileUrl)
-                Qt.quit()
-            }
-            onRejected: {
-                console.log("Canceled")
-                Qt.quit()
-            }
-        }
 
         onReleased: {
             fileDialog.visible = true

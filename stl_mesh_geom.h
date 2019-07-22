@@ -2,6 +2,7 @@
 
 #include <Qt3DRender/QGeometry>
 #include <vector>
+#include <memory>
 #include "stl_import.h"
 
 
@@ -23,12 +24,12 @@ private:
     std::vector<stl::face> _stl_data;
     glm::vec3 _dim;
 
-    Qt3DRender::QAttribute *m_positionAttribute = nullptr;
-    Qt3DRender::QAttribute *m_normalAttribute = nullptr;
-    Qt3DRender::QAttribute *m_indexAttribute = nullptr;
+    std::shared_ptr<Qt3DRender::QAttribute> m_positionAttribute = nullptr;
+    std::shared_ptr<Qt3DRender::QAttribute> m_normalAttribute = nullptr;
+    std::shared_ptr<Qt3DRender::QAttribute> m_indexAttribute = nullptr;
 
-    Qt3DRender::QBuffer *m_vertexBuffer = nullptr;
-    Qt3DRender::QBuffer *m_indexBuffer = nullptr;
+    std::shared_ptr<Qt3DRender::QBuffer> m_vertexBuffer = nullptr;
+    std::shared_ptr<Qt3DRender::QBuffer> m_indexBuffer = nullptr;
 
 public:
     stl_mesh_geom(QNode *parent = nullptr);

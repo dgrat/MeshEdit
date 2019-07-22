@@ -18,11 +18,11 @@ Item {
     signal pressed()
     signal released()
 
-    Keys.onEnterPressed:  {
-        root.applyPosition()
+    Keys.onReturnPressed:  {
+        root.apply()
     }
     Keys.onEscapePressed: {
-        root.visible = false
+        root.cancel()
     }
 
     Rectangle {
@@ -139,7 +139,7 @@ Item {
             y: rect.height - 30
 
             onPressed: {
-                root.applyPosition()
+                root.apply()
             }
         }
 
@@ -153,12 +153,12 @@ Item {
             y: rect.height - 30
 
             onPressed: {
-                root.visible = false
+                root.cancel()
             }
         }
     }
 
-    function applyPosition() {
+    function apply() {
         x = parseFloat(inp_x.text)
         y = parseFloat(inp_y.text)
         z = parseFloat(inp_z.text)
@@ -166,6 +166,12 @@ Item {
 
         root.ctrl_points.sl_changePosition(root.ctrl_point, v3d)
         root.visible = false
+        root.focus = false
+    }
+
+    function cancel() {
+        root.visible = false
+        root.focus = false
     }
 
     function set_entities(ctrl_points, ctrl_point) {
@@ -177,6 +183,7 @@ Item {
         root.x = x
         root.y = y
         coord_inp.visible = true
+        root.focus = true
     }
 
     function set_ctrl_pt_position(x, y, z) {

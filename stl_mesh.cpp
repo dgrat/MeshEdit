@@ -31,6 +31,7 @@ stl_mesh::stl_mesh(QNode *parent) : Qt3DRender::QGeometryRenderer(parent)
 void stl_mesh::sl_load(const QUrl &filename) {
     auto geo = static_cast<stl_mesh_geom *>(geometry());
     geo->load(filename);
+    emit geometryChanged(geo);
 }
 
 void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
@@ -78,5 +79,7 @@ void stl_mesh::sl_performFFD(ctrl_points *ctrl_pt_entity)
         face._norm = glm::cross(u, v);
     }
 
-    static_cast<stl_mesh_geom *>(geometry())->refresh(_ffd_mesh);
+    auto geo = static_cast<stl_mesh_geom *>(geometry());
+    geo->refresh(_ffd_mesh);
+    emit geometryChanged(geo);
 }

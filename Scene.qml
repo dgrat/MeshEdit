@@ -15,7 +15,7 @@ Entity {
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 30
+        fieldOfView: 60
         nearPlane : 0.001
         farPlane : 100.0
         position: Qt.vector3d( 0.0, 5.0, 0.0 )

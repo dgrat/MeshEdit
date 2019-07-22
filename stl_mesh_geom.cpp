@@ -1,6 +1,7 @@
 #include <glm/glm.hpp>
 #include "stl_mesh_geom.h"
 #include <cmath>
+#include <memory>
 
 #include <QNode>
 #include <QBuffer>
@@ -94,7 +95,16 @@ private:
 
 stl_mesh_geom::stl_mesh_geom(QNode *parent) : Qt3DRender::QGeometry(parent)
 {
+    m_positionAttribute = std::make_shared<Qt3DRender::QAttribute>(this);
+    m_normalAttribute = std::make_shared<Qt3DRender::QAttribute>(this);
+    m_indexAttribute = std::make_shared<Qt3DRender::QAttribute>(this);
 
+    m_vertexBuffer = std::make_shared<Qt3DRender::QBuffer>(this);
+    m_indexBuffer = std::make_shared<Qt3DRender::QBuffer>(this);
+
+    this->addAttribute(m_positionAttribute.get());
+    this->addAttribute(m_normalAttribute.get());
+    this->addAttribute(m_indexAttribute.get());
 }
 
 void stl_mesh_geom::load(const QUrl &filename) {
@@ -123,12 +133,6 @@ void stl_mesh_geom::refresh(const std::vector<stl::face> &data) {
 }
 
 void stl_mesh_geom::init(const std::vector<stl::face> &data) {
-    if(!m_positionAttribute) m_positionAttribute = new Qt3DRender::QAttribute(this);
-    if(!m_normalAttribute) m_normalAttribute = new Qt3DRender::QAttribute(this);
-    if(!m_indexAttribute) m_indexAttribute = new Qt3DRender::QAttribute(this);
-    if(!m_vertexBuffer) m_vertexBuffer = new Qt3DRender::QBuffer(this);
-    if(!m_indexBuffer) m_indexBuffer = new Qt3DRender::QBuffer(this);
-
     // vec3 pos, vec3 normal
     const quint32 elementSize = 1 + 1;
     const quint32 stride = elementSize * sizeof(glm::vec3);
@@ -139,7 +143,7 @@ void stl_mesh_geom::init(const std::vector<stl::face> &data) {
     m_positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
     m_positionAttribute->setVertexSize(3);
     m_positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    m_positionAttribute->setBuffer(m_vertexBuffer);
+    m_positionAttribute->setBuffer(m_vertexBuffer.get());
     m_positionAttribute->setByteStride(stride);
     m_positionAttribute->setCount(nVerts);
 
@@ -147,32 +151,28 @@ void stl_mesh_geom::init(const std::vector<stl::face> &data) {
     m_normalAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
     m_normalAttribute->setVertexSize(3);
     m_normalAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    m_normalAttribute->setBuffer(m_vertexBuffer);
+    m_normalAttribute->setBuffer(m_vertexBuffer.get());
     m_normalAttribute->setByteStride(stride);
     m_normalAttribute->setByteOffset(sizeof(glm::vec3));
     m_normalAttribute->setCount(nVerts);
 
     m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
-    m_indexAttribute->setBuffer(m_indexBuffer);
+    m_indexAttribute->setBuffer(m_indexBuffer.get());
     m_indexAttribute->setCount(nVerts);
 
     m_vertexBuffer->setDataGenerator(QSharedPointer<STLVertexDataFunctor>::create(data));
     m_indexBuffer->setDataGenerator(QSharedPointer<STLIndexDataFunctor>::create(data));
-
-    this->addAttribute(m_positionAttribute);
-    this->addAttribute(m_normalAttribute);
-    this->addAttribute(m_indexAttribute);
 }
 
 Qt3DRender::QAttribute *stl_mesh_geom::positionAttribute() const {
-    return m_positionAttribute;
+    return m_positionAttribute.get();
 }
 
 Qt3DRender::QAttribute *stl_mesh_geom::normalAttribute() const {
-    return m_normalAttribute;
+    return m_normalAttribute.get();
 }
 
 Qt3DRender::QAttribute *stl_mesh_geom::indexAttribute() const {
-    return m_indexAttribute;
+    return m_indexAttribute.get();
 }
