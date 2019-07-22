@@ -1,5 +1,7 @@
-#include <glm/glm.hpp>
 #include "stl_mesh_geom.h"
+
+#include <omp.h>
+#include <glm/glm.hpp>
 #include <cmath>
 #include <memory>
 
@@ -14,17 +16,18 @@ namespace {
         QByteArray mesh_buf;
         mesh_buf.resize(stl_data.size() * 6 * sizeof(glm::vec3));
         glm::vec3 *mesh_buf_acc = reinterpret_cast<glm::vec3 *>(mesh_buf.data());
+        #pragma omp parallel for
+        for(size_t i = 0; i < stl_data.size(); i++) {
+            size_t id = i*6;
+            auto &face = stl_data.at(i);
+            mesh_buf_acc[id++] = face._vert_1;
+            mesh_buf_acc[id++] = face._norm;
 
-        uint32_t vert_ind = 0;
-        for (auto &face : stl_data) {
-            mesh_buf_acc[vert_ind++] = face._vert_1;
-            mesh_buf_acc[vert_ind++] = face._norm;
+            mesh_buf_acc[id++] = face._vert_2;
+            mesh_buf_acc[id++] = face._norm;
 
-            mesh_buf_acc[vert_ind++] = face._vert_2;
-            mesh_buf_acc[vert_ind++] = face._norm;
-
-            mesh_buf_acc[vert_ind++] = face._vert_3;
-            mesh_buf_acc[vert_ind++] = face._norm;
+            mesh_buf_acc[id++] = face._vert_3;
+            mesh_buf_acc[id++] = face._norm;
         }
         return mesh_buf;
     }
@@ -34,7 +37,8 @@ namespace {
         index_buf.resize(stl_data.size() * 3 * sizeof(uint32_t));
         uint32_t *index_buf_acc = reinterpret_cast<uint32_t *>(index_buf.data());
 
-        for (unsigned int i = 0; i < stl_data.size()*3; i++) {
+        #pragma omp parallel for
+        for (size_t i = 0; i < stl_data.size()*3; i++) {
             index_buf_acc[i] = i;
         }
 
